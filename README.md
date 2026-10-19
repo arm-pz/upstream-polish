@@ -1,6 +1,8 @@
 # upstream-polish
 
-Audit upstream drift and listing mismatches with upstream-check, then generate polished fixes with Wordsmith. Use when the user wants to reconcile repo state with published listings (marketplace, site index, README), fix descriptions or topics that drifted, or clean up skill boundaries after a push — and wants both the diagnosis and concrete rewrites. Chains upstream-check (audit) → wordsmith (alternatives) in one workflow.
+**Fix listing drift and polish descriptions after upstream changes.**
+
+When your published listings (marketplace, site index, READMEs) no longer match your repos, or after you've pushed skill updates and need to sync the public surfaces, upstream-polish diagnoses the drift and generates polished fixes. It runs Upstream-Check to audit push readiness and listing mismatches, then passes the findings to Wordsmith to generate improved descriptions, topics, README openings, and skill page copy that match reality.
 
 ## Usage
 
@@ -10,15 +12,43 @@ Audit upstream drift and listing mismatches with upstream-check, then generate p
 Check what hasn't been pushed and fix the listings.
 ```
 
-## Workflow
+## When to use
 
-1. **Upstream-Check** audits repos for push readiness and listing drift
-2. **Wordsmith** generates polished fixes for descriptions/topics/READMEs
-3. Returns verdict table + alternatives + recommended actions
+- Your marketplace says 19 skills but your repos ship 12
+- You pushed skill updates and need to sync public descriptions
+- Repo descriptions no longer match what the skills actually do
+- Someone asks "why do your site and README list different numbers?"
+- You want to clean up skill boundaries after a batch push
+
+## What it produces
+
+- An upstream audit from Upstream-Check (push status, credential screening)
+- A drift report comparing published sources against ground truth
+- Polished fixes from Wordsmith for descriptions, topics, READMEs
+- Skill page copy that matches current reality
+- Boundary clarifications where skills overlap after changes
+
+## Install
+
+```bash
+npx skills add arm-pz/upstream-polish
+```
 
 ## Dependencies
 
 Requires `upstream-check` and `wordsmith` skills to be installed.
+
+## Not for
+
+- Creating skills from scratch → use [draft-skill](https://github.com/arm-pz/draft-skill)
+- Just tuning trigger language → use [tune-skill](https://github.com/arm-pz/tune-skill)
+- Making a repo discoverable initially → use [findable](https://github.com/arm-pz/findable)
+
+## Related
+
+- **[upstream-check](https://github.com/arm-pz/upstream-check)** — Audit drift and push safety (phase 1)
+- **[wordsmith](https://github.com/arm-pz/wordsmith)** — Generate polished alternatives (phase 2)
+- **[findable](https://github.com/arm-pz/findable)** — Initial discoverability setup
 
 ## License
 
