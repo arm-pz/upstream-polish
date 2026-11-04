@@ -8,7 +8,7 @@ When your published listings (marketplace, site index, READMEs) no longer match 
 
 ```text
 /upstream-polish --root ~/Downloads/Qoder
-/upstream-polish --owner arm-pz --site https://skills.caffeinity.com
+/upstream-polish --owner arm-pz --site https://skillsmith.tech
 Check what hasn't been pushed and fix the listings.
 ```
 
@@ -36,7 +36,7 @@ npx skills add arm-pz/upstream-polish
 
 ## Dependencies
 
-Requires `upstream-check` and `wordsmith` skills to be installed.
+Requires `upstream-check`, `listing-drift` and `wordsmith` skills to be installed.
 
 ## Not for
 
@@ -46,7 +46,8 @@ Requires `upstream-check` and `wordsmith` skills to be installed.
 
 ## Related
 
-- **[upstream-check](https://github.com/arm-pz/upstream-check)** — Audit drift and push safety (phase 1)
+- **[upstream-check](https://github.com/arm-pz/upstream-check)** — Push safety (phase 1)
+- **[listing-drift](https://github.com/arm-pz/listing-drift)** — Listing drift and stated counts (phase 1)
 - **[wordsmith](https://github.com/arm-pz/wordsmith)** — Generate polished alternatives (phase 2)
 - **[findable](https://github.com/arm-pz/findable)** — Initial discoverability setup
 

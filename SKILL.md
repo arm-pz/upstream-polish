@@ -1,6 +1,6 @@
 ---
 name: upstream-polish
-description: Audit upstream drift and listing mismatches with upstream-check, then generate polished fixes with Wordsmith. Use when the user wants to reconcile repo state with published listings (marketplace, site index, README), fix descriptions or topics that drifted, or clean up skill boundaries after a push — and wants both the diagnosis and concrete rewrites. Chains upstream-check (audit) → wordsmith (alternatives) in one workflow. Not for creating skills from scratch (use draft-skill) or tuning trigger language only (use tune-skill).
+description: Audit unpushed work with upstream-check and listing mismatches with listing-drift, then generate polished fixes with Wordsmith. Use when the user wants to reconcile repo state with published listings (marketplace, site index, README), fix descriptions or topics that drifted, or clean up skill boundaries after a push — and wants both the diagnosis and concrete rewrites. Chains upstream-check (push state) → listing-drift (listings) → wordsmith (alternatives) in one workflow. Not for creating skills from scratch (use draft-skill) or tuning trigger language only (use tune-skill).
 version: 1.0.0
 argument-hint: "[--root <dir>] [--owner <github-user>] [--site <url>]"
 user-invocable: true
@@ -10,13 +10,13 @@ metadata:
 
 # Upstream-Polish
 
-Chain two existing skills into a single workflow: **Upstream-Check** audits repos for push readiness and listing drift, then **Wordsmith** generates polished fixes for descriptions, topics, README openings, and skill page copy that no longer match reality.
+Chain three existing skills into a single workflow: **Upstream-Check** audits repos for push readiness, **Listing-Drift** checks the published listings against the repos, then **Wordsmith** generates polished fixes for descriptions, topics, README openings, and skill page copy that no longer match reality.
 
 ## Invocation
 
 ```text
 /upstream-polish --root ~/Downloads/Qoder
-/upstream-polish --owner arm-pz --site https://skills.caffeinity.com
+/upstream-polish --owner arm-pz --site https://skillsmith.tech
 Check what hasn't been pushed and fix the listings.
 ```
 
@@ -24,20 +24,23 @@ If no arguments are provided, ask the user for the root directory of their clone
 
 ## Workflow
 
-### Phase 1: Run Upstream-Check Audit
+### Phase 1: Run the Audits
 
-Invoke the **Upstream-Check skill** with the provided arguments:
+Invoke the **Upstream-Check skill** with the root directory:
 
 1. Scan the folder of git clones, fetch each, classify as push-ready/level/behind/diverged/no-upstream/no-remote.
 2. Screen outgoing diffs for credential-shaped lines; abort on hits unless `--allow-secret-hits`.
-3. Run the listing drift checker: compare ground truth (repos with SKILL.md) against published sources (site index, marketplace manifest, homepage, READMEs).
-4. Output: a structured report with verdict table + drift findings (absent repos, not-in-ground-truth entries, two indexes disagreeing).
 
-**Handoff rule:** Capture upstream-check's full report verbatim. Do not summarize yet.
+Then invoke the **Listing-Drift skill** with the owner and site URL:
+
+3. Compare ground truth (repos with SKILL.md) against published sources (site index, homepage, llms.txt, marketplace manifest, READMEs), judge every typed count, and flag links to a retired host.
+4. Output: a structured report with the verdict table from upstream-check + drift findings from listing-drift (absent repos, not-in-ground-truth entries, two indexes disagreeing, stale counts).
+
+**Handoff rule:** Capture both reports verbatim. Do not summarize yet. Run listing-drift after any push, so it reads what is now on GitHub.
 
 ### Phase 2: Generate Alternatives with Wordsmith
 
-Pass upstream-check's audit findings to the **Wordsmith skill** with this instruction:
+Pass listing-drift's findings to the **Wordsmith skill** with this instruction:
 
 ```
 For each listing drift finding identified below, generate 2–3 alternative versions
@@ -49,7 +52,7 @@ that fix the mismatch while preserving factual accuracy. Focus on:
 - Skill page copy that references outdated features or commands
 
 Original audit:
-[Paste upstream-check's full report here]
+[Paste listing-drift's full report here]
 
 Target repos/listings:
 [List the specific repos or listing entries flagged]
@@ -65,7 +68,7 @@ Wordsmith should:
 
 Return a three-part response:
 
-1. **Upstream-Check Verdict Summary** (push-ready repos first, then drift findings by severity)
+1. **Audit Summary** (upstream-check's push-ready repos first, then listing-drift's findings by severity)
 2. **Wordsmith Alternatives** (grouped by drift issue, with options labeled)
 3. **Recommended Actions** (which combination of alternatives + push commands to run, in 2–3 sentences)
 
@@ -74,7 +77,7 @@ Format the alternatives so the user can copy-paste directly into their files or 
 ## Example
 
 ```
-User: /upstream-polish --owner arm-pz --site https://skills.caffeinity.com
+User: /upstream-polish --owner arm-pz --site https://skillsmith.tech
 
 Assistant:
 
@@ -104,7 +107,7 @@ Assistant:
 
 ## Recommended Actions
 
-1. Run `node scripts/drift_check.mjs --owner arm-pz --site https://skills.caffeinity.com --fix` to add the two missing entries.
+1. Add the two missing entries at the source the site index is generated from, then re-run listing-drift to confirm the index now matches.
 2. Update findable's README count from 12 to 17 using Option A wording.
 3. Push findable-polish: `cd ~/arm-pz/findable-polish && git push origin main`.
 4. Pull seo-audit before pushing anything there.
@@ -119,4 +122,4 @@ Assistant:
 
 ## Dependencies
 
-This skill requires both `upstream-check` and `wordsmith` to be installed. If either is missing, tell the user and stop.
+This skill requires `upstream-check`, `listing-drift` and `wordsmith` to be installed. If any is missing, tell the user which and stop.
