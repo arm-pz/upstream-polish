@@ -8,7 +8,7 @@ When your published listings (marketplace, site index, READMEs) no longer match 
 
 ```text
 /upstream-polish --root ~/Downloads/Qoder
-/upstream-polish --owner arm-pz --site https://skills.caffeinity.com
+/upstream-polish --owner arm-pz --site https://skillsmith.tech
 Check what hasn't been pushed and fix the listings.
 ```
 
